@@ -40,18 +40,18 @@ export default function Home({data}) {
         <div className="container-md text-lg my-5">
           <h1>Berita Terbaru</h1>
           {!data ? "Loading" : 
-          data.filter((e)=> !(e.title === '[Removed]')).map((article,i) => {
+          data.filter(e=>e.image).map((article,i) => {
             return <div className="card my-3" key={i}>
               <div className="row g-0">
               <div className="col-md-4">
-                <img src={article.urlToImage} className="img-fluid rounded-start" alt={article.description}/>
+                <img src={article.image} className="img-fluid rounded-start" alt={article.title}/>
               </div>
               <div className="col-md-8">
                 <div className="card-body">
                   <h5 className="card-title">{article.title}</h5>
-                  <p className="card-text">{article.content}</p>
-                  <p className="card-text"><small className="text-body-secondary">Published {getRelativeTime(new Date(article.publishedAt))}</small></p>
-                  <a href={article.url}>View in {article.source.name}</a>
+                  <p className="card-text">{article.description}</p>
+                  <p className="card-text"><small className="text-body-secondary">Published {getRelativeTime(new Date(article.published_at))}</small></p>
+                  <a href={article.url}>View in {article.source}</a>
                 </div>
               </div>
             </div>
@@ -66,9 +66,7 @@ export default function Home({data}) {
 }
 
 export async function getServerSideProps() {
-  const res = await fetch("https://newsapi.org/v2/top-headlines?country=us&apiKey=7a1e2a4bb7d641a49383eca2dfc126ae")
-  const resJson = await res.json()
-  const data = resJson.articles
-  console.log(data)
+  const res = await fetch("http://api.mediastack.com/v1/news?access_key=1c931c818cf2985b7540b640d34f68ec&limit=50&countries=us&sources=cnn,bbc")
+  const {data} = await res.json()
   return {props:{data}}
 }
